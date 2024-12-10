@@ -17,6 +17,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as ListImport } from './routes/list'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as IndexImport } from './routes/index'
+import { Route as ListIndexImport } from './routes/list.index'
 import { Route as ListIdImport } from './routes/list.$id'
 
 // Create/Update Routes
@@ -54,6 +55,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const ListIndexRoute = ListIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ListRoute,
 } as any)
 
 const ListIdRoute = ListIdImport.update({
@@ -115,6 +122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListIdImport
       parentRoute: typeof ListImport
     }
+    '/list/': {
+      id: '/list/'
+      path: '/'
+      fullPath: '/list/'
+      preLoaderRoute: typeof ListIndexImport
+      parentRoute: typeof ListImport
+    }
   }
 }
 
@@ -122,10 +136,12 @@ declare module '@tanstack/react-router' {
 
 interface ListRouteChildren {
   ListIdRoute: typeof ListIdRoute
+  ListIndexRoute: typeof ListIndexRoute
 }
 
 const ListRouteChildren: ListRouteChildren = {
   ListIdRoute: ListIdRoute,
+  ListIndexRoute: ListIndexRoute,
 }
 
 const ListRouteWithChildren = ListRoute._addFileChildren(ListRouteChildren)
@@ -138,16 +154,17 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/list/$id': typeof ListIdRoute
+  '/list/': typeof ListIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRoute
-  '/list': typeof ListRouteWithChildren
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/list/$id': typeof ListIdRoute
+  '/list': typeof ListIndexRoute
 }
 
 export interface FileRoutesById {
@@ -159,6 +176,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/list/$id': typeof ListIdRoute
+  '/list/': typeof ListIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -171,8 +189,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/list/$id'
+    | '/list/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/list' | '/login' | '/profile' | '/search' | '/list/$id'
+  to: '/' | '' | '/login' | '/profile' | '/search' | '/list/$id' | '/list'
   id:
     | '__root__'
     | '/'
@@ -182,6 +201,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/list/$id'
+    | '/list/'
   fileRoutesById: FileRoutesById
 }
 
@@ -230,7 +250,8 @@ export const routeTree = rootRoute
     "/list": {
       "filePath": "list.jsx",
       "children": [
-        "/list/$id"
+        "/list/$id",
+        "/list/"
       ]
     },
     "/login": {
@@ -244,6 +265,10 @@ export const routeTree = rootRoute
     },
     "/list/$id": {
       "filePath": "list.$id.jsx",
+      "parent": "/list"
+    },
+    "/list/": {
+      "filePath": "list.index.jsx",
       "parent": "/list"
     }
   }

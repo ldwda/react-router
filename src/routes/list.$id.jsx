@@ -1,23 +1,24 @@
-import { useEffect, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { createFileRoute, useRouter, ErrorComponent, } from '@tanstack/react-router';
+import { useSuspenseQuery, useQueryErrorResetBoundary, } from '@tanstack/react-query';
 import { fetchPostById } from '../utils/api.js';
 export const Route = createFileRoute('/list/$id')({
+    loader: async ({ params: { id }, context: { queryClient } }) => {
+        // 确保数据在进入路由前已加载
+        await queryClient.ensureQueryData({
+            queryKey: ['list', id],
+            queryFn: () => fetchPostById(id),
+        });
+    },
     component: RouteComponent,
+    errorComponent: PostErrorComponent
 });
-
 function RouteComponent() {
-    const [idData, setIddata] = useState({})
     const { id } = Route.useParams();
-    const { data, error, isLoading } = useQuery({
-        queryKey: ['list', id], // 确保 postId 是定义的且不为 undefined
+    const { data: idData, error, isLoading } = useSuspenseQuery({
+        queryKey: ['list', id],
         queryFn: () => fetchPostById(id)
-    });
-    useEffect(() => {
-        if (data) {
-            setIddata(data)
-        }
-    }, [data, id])
+    })
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
     return (
@@ -27,5 +28,24 @@ function RouteComponent() {
             <p>{idData.body}</p>
         </div>
     )
+}
 
+export function PostErrorComponent() {
+    const router = useRouter()
+    const queryErrorResetBoundary = useQueryErrorResetBoundary()
+    useEffect(() => {
+        queryErrorResetBoundary.reset()
+    }, [queryErrorResetBoundary])
+    return (
+        <div>
+            <button
+                onClick={() => {
+                    router.invalidate()
+                }}
+            >
+                retry
+            </button>
+            <ErrorComponent />
+        </div>
+    )
 }
