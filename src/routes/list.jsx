@@ -13,7 +13,7 @@ export const Route = createFileRoute('/list')({
 })
 
 function List() {
-    const [category, setCategory] = useState('') // 分类筛选
+    const [category, setCategory] = useState('all') // 分类筛选
     const [value, setValue] = useState('') // 搜索输入值
     const inputRef = useRef(null)
     const loadMoreRef = useRef(null)
@@ -33,11 +33,7 @@ function List() {
         queryKey: ['posts', category], // 按分类和搜索条件变化重新查询
         queryFn: ({ pageParam = 1 }) =>
             fetchLists({ page: pageParam, query: value, category, pageSize: 5 }),
-        getNextPageParam: (lastPage, allPages) => {
-            console.log(allPages, 'allPages');
-            if (inputRef.current) {
-                inputRef.current.focus()
-            }
+        getNextPageParam: (lastPage) => {
             if (lastPage.hasNextPage) {
                 return +lastPage.page + 1 // 返回下一页
             }
@@ -64,11 +60,12 @@ function List() {
     // 分类过滤函数/节流
     const throttledOnCategory = useCallback(
         throttle((category) => {
-            setCategory(category === 'all' ? '' : category)
+            setCategory(category)
             refetch() // 执行 refetch 重新查询
         }, 500),
         []
     )
+
     // 按钮点击节流
     const throttledOnButtonClick = useCallback(
         throttle(() => {
@@ -156,7 +153,7 @@ function List() {
                         {isFetchingNextPage ? (
                             <span>Loading...</span>
                         ) : (
-                            <span>--- 我是有底线的 ---</span>
+                            <span>--- 到底啦！！ ---</span>
                         )}
                     </div>
                 </div>

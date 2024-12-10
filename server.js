@@ -24,13 +24,12 @@ const posts = Array.from({ length: 50 }, (_, i) => ({
 
 // 获取列表（支持分页、分类和模糊查询）
 app.get('/api/posts', (req, res) => {
-    const { page = 1, pageSize = 10, query = '', category = '' } = req.query;
-
+    const { page = 1, pageSize = 10, query = '', category = 'all' } = req.query;
     // 过滤数据
     let filteredPosts = posts.filter(
         (post) =>
             (!query || post.title.toLowerCase().includes(query.toLowerCase())) &&
-            (!category || post.category === category)
+            (category == 'all' || post.category === category)
     );
 
     // 分页
