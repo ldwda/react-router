@@ -13,6 +13,9 @@ export const fetchLists = async (params) => {
 
 // 获取详情
 export const fetchPostById = async (id) => {
+    console.log(1);
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    console.log(2);
     return http({
         method: 'GET',
         url: `${API_URL}/posts/${id}`,

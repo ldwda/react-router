@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { createFileRoute, useRouter, ErrorComponent, } from '@tanstack/react-router';
-import { useSuspenseQuery, useQueryErrorResetBoundary, } from '@tanstack/react-query';
 import { fetchPostById } from '../utils/api.js';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
+import List from './-components/ListId.jsx'
 export const Route = createFileRoute('/list/$id')({
     loader: async ({ params: { id }, context: { queryClient } }) => {
         // 确保数据在进入路由前已加载
@@ -10,23 +11,14 @@ export const Route = createFileRoute('/list/$id')({
             queryFn: () => fetchPostById(id),
         });
     },
-    component: RouteComponent,
-    errorComponent: PostErrorComponent
+    component: IdPage,
+    errorComponent: <PostErrorComponent></PostErrorComponent>
 });
-function RouteComponent() {
-    const { id } = Route.useParams();
-    const { data: idData, error, isLoading } = useSuspenseQuery({
-        queryKey: ['list', id],
-        queryFn: () => fetchPostById(id)
-    })
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+function IdPage() {
     return (
-        <div>
-            <p>{idData.title}</p>
-            <p>{idData.category}</p>
-            <p>{idData.body}</p>
-        </div>
+        <Suspense fallback={<div>Suspense ListID Loading...</div>}>
+            <List></List>
+        </Suspense>
     )
 }
 
