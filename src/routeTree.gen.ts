@@ -11,43 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SearchImport } from './routes/search'
-import { Route as ProfileImport } from './routes/profile'
-import { Route as LoginImport } from './routes/login'
 import { Route as ListImport } from './routes/list'
-import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as IndexImport } from './routes/index'
 import { Route as ListIndexImport } from './routes/list.index'
 import { Route as ListIdImport } from './routes/list.$id'
 
 // Create/Update Routes
 
-const SearchRoute = SearchImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProfileRoute = ProfileImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const ListRoute = ListImport.update({
   id: '/list',
   path: '/list',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthenticatedRoute = AuthenticatedImport.update({
-  id: '/_authenticated',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -80,39 +53,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthenticatedImport
-      parentRoute: typeof rootRoute
-    }
     '/list': {
       id: '/list'
       path: '/list'
       fullPath: '/list'
       preLoaderRoute: typeof ListImport
-      parentRoute: typeof rootRoute
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchImport
       parentRoute: typeof rootRoute
     }
     '/list/$id': {
@@ -148,21 +93,13 @@ const ListRouteWithChildren = ListRoute._addFileChildren(ListRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '': typeof AuthenticatedRoute
   '/list': typeof ListRouteWithChildren
-  '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
-  '/search': typeof SearchRoute
   '/list/$id': typeof ListIdRoute
   '/list/': typeof ListIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '': typeof AuthenticatedRoute
-  '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
-  '/search': typeof SearchRoute
   '/list/$id': typeof ListIdRoute
   '/list': typeof ListIndexRoute
 }
@@ -170,57 +107,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRoute
   '/list': typeof ListRouteWithChildren
-  '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
-  '/search': typeof SearchRoute
   '/list/$id': typeof ListIdRoute
   '/list/': typeof ListIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | ''
-    | '/list'
-    | '/login'
-    | '/profile'
-    | '/search'
-    | '/list/$id'
-    | '/list/'
+  fullPaths: '/' | '/list' | '/list/$id' | '/list/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/login' | '/profile' | '/search' | '/list/$id' | '/list'
-  id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/list'
-    | '/login'
-    | '/profile'
-    | '/search'
-    | '/list/$id'
-    | '/list/'
+  to: '/' | '/list/$id' | '/list'
+  id: '__root__' | '/' | '/list' | '/list/$id' | '/list/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRoute: typeof AuthenticatedRoute
   ListRoute: typeof ListRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  ProfileRoute: typeof ProfileRoute
-  SearchRoute: typeof SearchRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRoute: AuthenticatedRoute,
   ListRoute: ListRouteWithChildren,
-  LoginRoute: LoginRoute,
-  ProfileRoute: ProfileRoute,
-  SearchRoute: SearchRoute,
 }
 
 export const routeTree = rootRoute
@@ -234,18 +142,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_authenticated",
-        "/list",
-        "/login",
-        "/profile",
-        "/search"
+        "/list"
       ]
     },
     "/": {
       "filePath": "index.jsx"
-    },
-    "/_authenticated": {
-      "filePath": "_authenticated.ts"
     },
     "/list": {
       "filePath": "list.jsx",
@@ -253,15 +154,6 @@ export const routeTree = rootRoute
         "/list/$id",
         "/list/"
       ]
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/profile": {
-      "filePath": "profile.tsx"
-    },
-    "/search": {
-      "filePath": "search.tsx"
     },
     "/list/$id": {
       "filePath": "list.$id.jsx",

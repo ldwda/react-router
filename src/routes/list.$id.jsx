@@ -1,7 +1,6 @@
-import { Suspense, useEffect } from 'react';
-import { createFileRoute, useRouter, ErrorComponent, } from '@tanstack/react-router';
+import { Suspense, } from 'react';
+import { createFileRoute, } from '@tanstack/react-router';
 import { fetchPostById } from '../utils/api.js';
-import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 import List from './-components/ListId.jsx'
 export const Route = createFileRoute('/list/$id')({
     loader: async ({ params: { id }, context: { queryClient } }) => {
@@ -12,32 +11,13 @@ export const Route = createFileRoute('/list/$id')({
         });
     },
     component: IdPage,
-    errorComponent: <PostErrorComponent></PostErrorComponent>
+    pendingComponent: () => <div>loader1  Loading...</div>,
+    errorComponent: () => <div>loader Something went wrong</div>,
 });
 function IdPage() {
     return (
         <Suspense fallback={<div>Suspense ListID Loading...</div>}>
             <List></List>
         </Suspense>
-    )
-}
-
-export function PostErrorComponent() {
-    const router = useRouter()
-    const queryErrorResetBoundary = useQueryErrorResetBoundary()
-    useEffect(() => {
-        queryErrorResetBoundary.reset()
-    }, [queryErrorResetBoundary])
-    return (
-        <div>
-            <button
-                onClick={() => {
-                    router.invalidate()
-                }}
-            >
-                retry
-            </button>
-            <ErrorComponent />
-        </div>
     )
 }

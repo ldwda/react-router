@@ -22,8 +22,8 @@ export const Route = createFileRoute('/list')({
         // console.log(validatedSearch, 'validatedSearch in validateSearch');
         return validatedSearch;
     },
-    // pendingComponent: () => <div>loaderLoading...</div>,
-    // errorComponent: () => <div>loader Something went wrong</div>,
+    pendingComponent: () => <div>loader  Loading...</div>,
+    errorComponent: () => <div>loader Something went wrong</div>,
     component: List
 })
 
